@@ -60,9 +60,9 @@ Symlinks das skills que já existiam continuam. Skill **nova** no repo: roda o `
 
 | Grupo | Skills |
 |-------|--------|
-| Vite + TanStack Router | `estrutura-pastas-rotas`, `checklist-novo-modulo`, `search-params-url`, `modals-url`, `actions-api`, `tanstack-query`, `composition-ui`, `formularies`, `zustand-stores`, `use-confirm`, `interfaces-base`, `api-auth`, `env-zod` |
-| Next.js admin CRUD | `admin-crud-module-structure`, `admin-crud-new-module-checklist`, `admin-crud-search-params`, `admin-crud-actions-api`, `admin-crud-composition-ui`, `admin-crud-formularies`, `admin-crud-media-upload` |
-| NestJS | `nestjs-module-structure` |
+| Vite + TanStack Router | `estrutura-pastas-rotas`, `checklist-novo-modulo`, `search-params-url`, `modals-url`, `actions-api`, `tanstack-query`, `composition-ui`, `formularies`, `zustand-stores`, `use-confirm`, `interfaces-base`, `api-auth`, `env-zod`, `vite-keycloak-authorization` |
+| Next.js admin CRUD | `admin-crud-module-structure`, `admin-crud-new-module-checklist`, `admin-crud-search-params`, `admin-crud-actions-api`, `admin-crud-composition-ui`, `admin-crud-formularies`, `admin-crud-media-upload`, `nextjs-keycloak-authorization` |
+| NestJS | `nestjs-module-structure`, `keycloak-admin-rest` |
 
 Cada skill vive em `skills/<nome>/SKILL.md`.
 

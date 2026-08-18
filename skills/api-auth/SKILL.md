@@ -35,6 +35,10 @@ buildApiRoute(API_ROUTES.DELETE.PRIVATE.VIDEOS.DELETE_EXTERNAL_VIDEO, { external
 - `handleErrorTreatment` → toast sonner (Zod + Axios)
 - Guards de rota: toast + `redirect` quando sem auth
 
+## Skills irmãs
+
+Login Keycloak completo: `vite-keycloak-authorization` (Vite) / `nextjs-keycloak-authorization` (Next). Admin REST / M2M: `keycloak-admin-rest`.
+
 ## Proxy dev
 
 `/media` proxied no Vite para o backend (cookies/token) — não reinventar fetch de blob sem checar o get existente em `tanstack-query/medias`.
