@@ -5,6 +5,11 @@ description: Estrutura de pastas e page shell para módulos admin CRUD (posts, p
 
 # Módulo admin CRUD — estrutura
 
+## Exemplos
+
+- [`examples/tree.txt`](examples/tree.txt)
+- [`examples/page.tsx`](examples/page.tsx) — RSC + prefetch + HydrationBoundary
+
 Referências: `posts`, `products`, `banner-set`, `rankings`, `campaigns`.
 
 ## Árvore obrigatória em `src/app/(private)/{module}/`
