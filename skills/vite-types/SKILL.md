@@ -5,6 +5,10 @@ description: Interfaces base — pagination, dates, action/callback args, InferZ
 
 # Interfaces base
 
+## Exemplos
+
+- [`examples/base-types.ts`](examples/base-types.ts) — pagination, dates, action args
+
 Local: `src/shared/interfaces/`.
 
 ## Contratos obrigatórios
