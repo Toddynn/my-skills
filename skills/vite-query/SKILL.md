@@ -5,6 +5,12 @@ description: TanStack Query — estrutura get, query keys, infinite pagination. 
 
 # TanStack Query
 
+## Exemplos
+
+- [`examples/index.ts`](examples/index.ts) — Entity + fetch
+- [`examples/query-key.ts`](examples/query-key.ts) — `*_query_key`
+- [`examples/use-index.ts`](examples/use-index.ts) — `useInfiniteQuery`
+
 ## Árvore por recurso
 
 ```
