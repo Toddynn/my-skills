@@ -5,6 +5,12 @@ description: React Hook Form, schemas Zod e formularies dos módulos admin CRUD.
 
 # Formularies e validação — módulos admin
 
+## Exemplos
+
+- [`examples/create-widget-form-fields-schema.ts`](examples/create-widget-form-fields-schema.ts) — RHF
+- [`examples/create-widget-schema.ts`](examples/create-widget-schema.ts) — payload API
+- [`examples/widget-formulary-ui.ts`](examples/widget-formulary-ui.ts) — barrel UI
+
 ## Schemas — split obrigatório
 
 | Arquivo | Uso |
