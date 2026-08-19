@@ -5,6 +5,11 @@ description: Actions hook, context, TanStack GET e invalidação em módulos adm
 
 # Actions e API — módulos admin
 
+## Exemplos
+
+- [`examples/use-widget-actions.ts`](examples/use-widget-actions.ts) — snake_case + invalidate
+- [`examples/get-all-widgets.ts`](examples/get-all-widgets.ts) — GET `get/{entity}/`
+
 ## Separação de responsabilidades
 
 | Camada | Onde | O quê |
