@@ -1,0 +1,27 @@
+src/routes/_private/prompts/
+├── index.tsx
+└── -shared/
+    ├── components/
+    │   ├── headers/
+    │   │   ├── my-prompts-header.tsx
+    │   │   ├── public-prompts-header.tsx
+    │   │   └── prompts-page-header.tsx
+    │   └── prompts-list-collapsible/
+    ├── functions/
+    │   ├── use-prompts-actions.ts
+    │   └── use-prompts-query-states.ts
+    ├── interfaces/
+    │   ├── create-prompt-form.ts
+    │   └── edit-prompt-form.ts
+    └── schemas/
+        ├── create-prompt-schema.ts
+        ├── edit-prompt-schema.ts
+        └── prompts-search-params.ts
+
+src/components/ui/
+├── cards/my-prompt-card/
+├── cards/public-prompt-card/
+├── formularies/prompts/create-prompt-formulary/
+└── composition-pattern/{actions,cards,triggers}/…
+
+src/shared/functions/tanstack-query/prompts/

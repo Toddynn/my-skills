@@ -5,53 +5,64 @@ description: Checklist para criar um novo módulo/rota no Vite + TanStack Router
 
 # Novo módulo — checklist
 
-Antes de codar: **entidade**, **path da rota**, **tem upload?** (files store) ou **JSON puro?**, **tem select-modal?**
+Canônico: `src/routes/_private/prompts` (content-creator). Skills irmãs têm o código.
+
+## Exemplos
+
+- [`examples/prompts-tree.txt`](examples/prompts-tree.txt)
+- [`examples/prompts-route.tsx`](examples/prompts-route.tsx)
+- [`examples/prompts-search-params.ts`](examples/prompts-search-params.ts)
+- [`examples/use-prompts-query-states.ts`](examples/use-prompts-query-states.ts)
+- Actions: `vite-actions` `use-prompts-actions.ts`
+- Formulary: `vite-forms` `create-prompt-formulary.tsx`
+
+Antes: entidade, path, upload?, select-modal?
 
 Rules: `vite-routes`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-zustand`, `vite-confirm`, `vite-env`, `vite-types`, `vite-api`.
 
 ## 1. Rota `src/routes/_private/{module}/`
 
-- [ ] `index.tsx` — `createFileRoute`, `head`, `validateSearch`, `loader` crumb + LoadingPage, `notFoundComponent`
-- [ ] `-shared/schemas/*-search-params.ts` — defaults + Zod + `.extend(modalControlSearchParams.shape)`
-- [ ] `-shared/functions/use-*-query-states.ts` — search/page + debounce + reset page
-- [ ] `-shared/functions/use-*-actions.ts` — create/edit/delete + `handleErrorTreatment` + invalidate
-- [ ] `-shared/schemas` + `-shared/interfaces` de form
-- [ ] `-shared/components/header` se header específico
-- [ ] **Sem** `'use client'`
-- [ ] **Named exports**
+- [ ] `index.tsx` — `createFileRoute`, `head`, `validateSearch` (Zod parse), `loader` crumb + `LoadingPage`, `notFoundComponent`, `component: RouteComponent` **local** (não export)
+- [ ] `beforeLoad` opcional (prompts: count)
+- [ ] `-shared/schemas/*-search-params.ts` — defaults string + `.extend(modalControlSearchParams.shape)`
+- [ ] `-shared/functions/use-*-query-states.ts` — `Route.useSearch` + `useNavigate` + `useDebounce` + `reset('page')`
+- [ ] `-shared/functions/use-*-actions.ts` — create/edit/delete
+- [ ] `-shared/schemas` + `-shared/interfaces` (`InferZod`)
+- [ ] Header da página em `-shared/components/headers/`
+- [ ] List extra (collapsible, visibility store) **só** se o módulo tiver duas listas — não copiar de prompts à toa
+- [ ] Rota **sem** `'use client'`. Query-states de prompts tem leftover `'use client'` — **não** replicar no Vite
 
 ## 2. TanStack GET `shared/functions/tanstack-query/{domain}/`
 
-- [ ] `{operation}/index.ts` — Entity + fetch
-- [ ] `query-key.ts` — fn snake_case (nunca hardcode no call site)
-- [ ] `use-index.ts` — infinite/suspense/query
-- [ ] Paginação: `DefaultPaginatedResponse` + `getNextPageParam` + `InfiniteList`
+- [ ] fetch + `query-key.ts` fn snake_case
+- [ ] `use-index.ts` infinite
+- [ ] Page: `InfiniteList` + card named export
 
 ## 3. UI `components/ui/`
 
-- [ ] `cards/{entity}-card/` — named export
-- [ ] `composition-pattern/cards/{domain}/` → `{Domain}CardUI`
-- [ ] `composition-pattern/actions/{domain}/` → `{Domain}Actions`
-- [ ] `formularies/{domain}/` — RHF + Zod + `Controller`/`Field`
-- [ ] `modals/{domain}/` — `control` + formulary `actions`
-- [ ] Delete action com `useConfirm`
+- [ ] `cards/{entity}-card/` — **não** em `-shared`
+- [ ] `composition-pattern/actions|cards|triggers/{domain}/`
+- [ ] `formularies/{domain}/` — RHF no mesmo arquivo (`vite-forms`)
+- [ ] `modals/{domain}/` — `control` + `actions` no formulary
+- [ ] Delete: `useConfirm`
 
 ## 4. Estado
 
-- [ ] Filtros/paginação/modal na **URL**
-- [ ] Upload → `useFiles` + clear no close
-- [ ] Select-modal → selection store (factory) se precisar
+- [ ] Filtro/page/modal na **URL**
+- [ ] Upload → `useFiles` (skill `vite-zustand`)
+- [ ] Select-modal → selection store se precisar (prompts: `useSelectPromptCategoriesStore`)
 
 ## 5. API
 
-- [ ] Entradas em `API_ROUTES` + uso via `buildApiRoute`
-- [ ] Env nova → schema Zod em `env-variables` + `.sample.env`
+- [ ] `API_ROUTES` + `buildApiRoute` tipado
+- [ ] Env nova → Zod `env-variables` + `.sample.env`
 
 ## 6. Não criar
 
-- `'use client'`
+- `'use client'` na rota
 - `tanstack-query/mutation/`
-- query key hardcoded (sempre fn `*_query_key`)
-- card de domínio em `-shared` (vai em `components/ui/cards`)
-- default export
-- HeroUI / `window.confirm` / `useState` por campo de form
+- query key hardcoded
+- card em `-shared`
+- default export (exceto se Biome do projeto permitir)
+- HeroUI / `window.confirm` / `useState` por campo
+- `useFormContext` + field file separado (padrão prompts = um formulary)
