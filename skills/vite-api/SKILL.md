@@ -5,40 +5,33 @@ description: Axios API client, Keycloak auth, API_ROUTES e buildApiRoute. Use wh
 
 # API e auth
 
+## Exemplos
+
+- [`examples/axios-instances.ts`](examples/axios-instances.ts)
+- [`examples/api-routes.ts`](examples/api-routes.ts)
+- [`examples/build-api-route.ts`](examples/build-api-route.ts) — **copiar inteiro**. Tipagem `AllApiPaths` + params obrigatórios. Regex simples **erra**.
+
 ## Client
 
-`lib/providers/api`:
+`lib/providers/api`: `api` (401 interceptor) + `authless` (refresh/login/logout). `withCredentials: true`. Sem Bearer.
 
-- `api` — axios com `baseURL: backend_url`, `withCredentials: true`, interceptor 401
-- `authless` — refresh/logout sem loop de interceptor
+Auth: skill `vite-login-keycloak`.
 
-## Auth Keycloak
+## `buildApiRoute`
 
-- Provider + context: `lib/providers/keycloak-auth-provider`, `contexts/keycloak-auth-context`
-- Hook: `useKeycloakAuth()`
-- 401 → fila `refresh-token-queue` → retry
-- Roles em `shared/constants/roles` (+ roles Petim via env)
+Ler o example. Comportamento:
 
-## Rotas tipadas
+- `Path extends AllApiPaths` — só path da árvore `API_ROUTES`
+- Sem `:param` no path → **não** aceita 2º argumento
+- Com `:param` → objeto **exato** das keys (`{ prompt_id }`)
+- Runtime: replace `:name`; missing → `throw new Error(\`Missing parameter "${paramName}" for path "${path}"\`)`
 
 ```ts
-buildApiRoute(API_ROUTES.DELETE.PRIVATE.VIDEOS.DELETE_EXTERNAL_VIDEO, { external_video_id })
+buildApiRoute(API_ROUTES.DELETE.PRIVATE.PROMPTS.DELETE_PROMPT, { prompt_id })
 ```
 
-- Árvore em `shared/constants/api-routes`
-- **Nunca** concatenar URL de endpoint na mão
-- Params de path via objeto no `buildApiRoute`
+**Nunca** concatenar URL.
 
 ## Erros
 
-- Actions: `try/catch` → `handleErrorTreatment(error)` → `on_fail?.(error)`
-- `handleErrorTreatment` → toast sonner (Zod + Axios)
-- Guards de rota: toast + `redirect` quando sem auth
-
-## Skills irmãs
-
-Login Keycloak completo: `vite-login-keycloak` (Vite) / `nextjs-login-keycloak` (Next). Admin REST / M2M: `nestjs-keycloak-admin`.
-
-## Proxy dev
-
-`/media` proxied no Vite para o backend (cookies/token) — não reinventar fetch de blob sem checar o get existente em `tanstack-query/medias`.
+Actions: `handleErrorTreatment(error)` + `on_fail`.
