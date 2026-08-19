@@ -2,8 +2,6 @@
 
 Skills pessoais de agente (Cursor, Claude Code e `~/.agents/skills`).
 
-Só o que é teu. Skills de terceiros (Emil Kowalski, caveman, graphify, etc.) não entram aqui — ficam nas pastas da ferramenta.
-
 Cada skill deste repo vira um symlink dentro das pastas padrão. O resto que já estiver lá continua.
 
 ## Pré-requisito
@@ -21,9 +19,13 @@ Git. Linux ou macOS.
 Clone onde quiser:
 
 ```bash
-git clone <URL-DO-REPO> ~/my-skills
+git clone https://github.com/Toddynn/my-skills
 cd ~/my-skills
 ```
+
+Simplesmente peça para o seu agente fazer o symlink das skills do repositório que acabou de clonar
+
+ou
 
 Cria as pastas se não existirem. **Não** substitui a pasta inteira — isso apagaria skills de outros autores.
 
