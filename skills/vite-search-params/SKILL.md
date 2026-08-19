@@ -5,6 +5,12 @@ description: Search params na URL via TanStack Router, debounce e query-states. 
 
 # Search params (URL)
 
+## Exemplos
+
+- [`examples/search-params-schema.ts`](examples/search-params-schema.ts) — Zod + `modalControlSearchParams`
+- Query-states real: `vite-new-module` [`use-prompts-query-states.ts`](../vite-new-module/examples/use-prompts-query-states.ts)
+- Debounce: `nextjs-search-params` [`use-debounce.ts`](../nextjs-search-params/examples/use-debounce.ts) (mesmo hook)
+
 **Sem nuqs.** Estado de filtro/paginação/tab/modal fica na URL via TanStack Router.
 
 ## Schema na rota
