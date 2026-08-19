@@ -64,7 +64,9 @@ Symlinks das skills que já existiam continuam. Skill **nova** no repo: roda o `
 | Next.js admin CRUD | `nextjs-module`, `nextjs-new-module`, `nextjs-search-params`, `nextjs-actions`, `nextjs-composition`, `nextjs-forms`, `nextjs-upload`, `nextjs-login-keycloak` |
 | NestJS | `nestjs-module`, `nestjs-keycloak-admin` |
 
-Cada skill vive em `skills/<nome>/SKILL.md`.
+Cada skill vive em `skills/<nome>/SKILL.md`. Código canônico em `skills/<nome>/examples/` (domínio `widget`). O symlink global aponta a **pasta inteira** da skill, então o agente lê os examples sem os repositórios origem. `SKILL.md` = regras. `examples/` = copiar.
+
+Não coloque examples na raiz do repo — o destino `~/.cursor/skills/<nome>` não enxerga a raiz.
 
 ## Desinstalar
 
