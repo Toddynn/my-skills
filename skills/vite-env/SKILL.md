@@ -5,6 +5,11 @@ description: Validação de variáveis de ambiente com Zod no boot (Vite). Use w
 
 # Env variables (Zod)
 
+## Exemplos
+
+- [`examples/env-variables.ts`](examples/env-variables.ts) — schema Zod no boot
+- [`examples/sample.env`](examples/sample.env) — documentar no sample
+
 Path: `src/shared/constants/env-variables/index.ts`
 
 ## Regras
