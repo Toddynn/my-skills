@@ -5,6 +5,11 @@ description: Cards, Actions, CardUI, Triggers, formularies e modals — composit
 
 # Composition UI
 
+## Exemplos
+
+- [`examples/widget-actions.ts`](examples/widget-actions.ts) — barrel Actions
+- [`examples/widget-card.tsx`](examples/widget-card.tsx) — card orquestra
+
 ## Onde vive
 
 ```
