@@ -5,37 +5,30 @@ description: useConfirm para deletes e ações sensíveis. Use when adding delet
 
 # Ações sensíveis — useConfirm
 
-Hook: `hooks/use-confirm` → lê o `ConfirmProvider` (`lib/providers/confirm`).
+Copiar os quatro arquivos. Vite usa URL (`confirm-modal`), não `useState` local (isso é Next clube-adm).
 
-Confirm UI usa `useModalControlQuery('confirm', { key: 'confirm-modal' })`.
+## Exemplos
+
+- [`examples/use-confirm.ts`](examples/use-confirm.ts)
+- [`examples/confirm-context.ts`](examples/confirm-context.ts)
+- [`examples/confirm-provider.tsx`](examples/confirm-provider.tsx)
+- [`examples/confirm-modal.tsx`](examples/confirm-modal.tsx)
+- [`examples/confirm-modal-interfaces.ts`](examples/confirm-modal-interfaces.ts)
+- [`examples/delete-widget-action.tsx`](examples/delete-widget-action.tsx)
+
+## Wiring
+
+1. `ConfirmContext` + `ConfirmProvider` no root (junto dos outros providers).
+2. Provider: `useModalControlQuery('confirm', { key: 'confirm-modal' })`.
+3. `confirm(options)` → abre modal, `Promise<boolean>`.
+4. `useConfirm()` lê context — throw se fora do provider.
+
+`ConfirmOptions`: `title` obrigatório; `description`; `requireConfirmationText` + `compareTo` pra digitar texto.
 
 ## Quando obrigatório
 
-- Delete de entidade
-- Integrações irreversíveis / side-effects sensíveis (ex.: integrar com Petim)
-- Qualquer ação destrutiva ou difícil de desfazer
+Delete, side-effect irreversível. Sem `window.confirm`. Sem confirm em ação inofensiva.
 
-## Padrão no action button
+## Action button
 
-```ts
-const confirm = useConfirm();
-
-const waitForConfirmation = useCallback(async () => {
-  const res = await confirm({
-    title: 'Essa ação irá excluir um vídeo!',
-    description: 'Confirme essa ação, por motivos de segurança.',
-  });
-  if (res) await handleDelete();
-}, [confirm, handleDelete]);
-```
-
-- `useMutation` no botão chama o actions hook da rota
-- Toast de sucesso no `on_success`
-- `isPending` → `Spinner` + `disabled`
-- Default visual delete: `variant="destructive"` + `LucideTrash2`
-
-## Não fazer
-
-- `window.confirm`
-- Delete direto sem confirm
-- Confirmar ações idempotentes/inofensivas (só ruído)
+`const res = await confirm({ title, description })`. Se `res`, `mutateAsync`. Toast no `on_success`. `isPending` → Spinner + disabled.
