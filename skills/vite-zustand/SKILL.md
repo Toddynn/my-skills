@@ -5,6 +5,10 @@ description: Zustand — files, selection e visibility; quando URL vs store. Use
 
 # Zustand stores
 
+## Exemplos
+
+- [`examples/files-store.ts`](examples/files-store.ts) — `useFiles` + revoke blob
+
 Usar zustand para estado que **transita entre componentes que montam/desmontam** ou seleção efêmera de modal. Filtros/paginação/modais → **URL**.
 
 ## Stores existentes
