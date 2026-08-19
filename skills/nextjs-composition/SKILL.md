@@ -5,88 +5,57 @@ description: Cards, actions, drawers e modais — composition pattern dos módul
 
 # Composition UI — módulos admin
 
+Canônico: FAQ no clube-adm. Copiar estrutura dos examples, não só o barrel.
+
+## Exemplos
+
+- [`examples/faqs-actions.ts`](examples/faqs-actions.ts) — barrel
+- [`examples/open-create-faq-drawer-action.tsx`](examples/open-create-faq-drawer-action.tsx)
+- [`examples/open-edit-faq-drawer-action.tsx`](examples/open-edit-faq-drawer-action.tsx) — `action_name` com id
+- [`examples/delete-faq-action.tsx`](examples/delete-faq-action.tsx) — confirm + mutation
+- [`examples/faq-card.tsx`](examples/faq-card.tsx) — card orquestra
+- [`examples/faq-card-ui.ts`](examples/faq-card-ui.ts) + [`faq-question.tsx`](examples/faq-question.tsx)
+- [`examples/create-faq-drawer.tsx`](examples/create-faq-drawer.tsx) — Sheet + ProgressModal
+
 ## Actions (`composition-pattern/actions/{entity-plural}/`)
 
-Barrel export:
-
-```ts
-export const {Entity}Actions = {
-  OpenCreate{Entity}Drawer: OpenCreate{Entity}DrawerAction,
-  OpenEdit{Entity}Drawer: OpenEdit{Entity}DrawerAction,
-  Delete{Entity}: Delete{Entity}Action,
-  // extras: OpenAboutDialog, OpenEligibleUsersModal, etc.
-};
-```
-
 - Arquivo: `open-create-{entity}-drawer-action.tsx`, `open-edit-{entity}-drawer-action.tsx`, `delete-{entity}-action.tsx`.
-- Props estendem `Omit<ButtonProps, 'onClick'>`.
+- Props: `Omit<ButtonProps, 'onClick'>` (+ entidade no edit/delete).
 - `children` opcional com default (label + ícone lucide).
-- `useModalControlQuery` com key `{prefix}_modal`.
-- Cada action: `<Fragment>` → `Button` + drawer/dialog.
+- `useModalControlQuery` key `{prefix}_modal` (`fa_modal`).
+- Create: `'create-faq'`. Edit: `` `edit-faq:${faq.id}` `` (id no `action_name`, sem `hasState`).
+- Cada action: `<Fragment>` → `Button` + drawer/dialog montado junto.
+- Next admin: `useVerifyAuthorization` + `id` no botão pra hide.
 
-## Delete action
+## Delete
 
-1. `use{Entity}Actions().delete_{entity}` direto.
-2. `useMutation` inline.
-3. `useConfirm()` antes de executar (condicional se entidade ativa, quando aplicável).
-4. Toast em `on_success` do action hook.
+1. `use{Entity}Actions().delete_{entity}`.
+2. `useMutation` no botão.
+3. `useConfirm()` antes (FAQ: só se `faq.active`).
+4. Toast no `on_success` do action hook.
 5. `isPending` → `Spinner` + `disabled`.
-6. Default: `variant="destructive"`, texto "Excluir" + `LucideTrash2`.
+6. Default `variant="destructive"` + `LucideTrash2`.
 
-## Cards (`cards/{entity}-card/index.tsx`)
+## Cards
 
-```tsx
-<Card>
-  <CardContent>
-    <{Entity}CardUI.* />  {/* subcomponentes de apresentação */}
-  </CardContent>
-  <CardFooter>
-    <DateUI.CreatedAt /> + <DateUI.UpdatedAt />
-    <{Entity}Actions.OpenEdit... /> + <{Entity}Actions.Delete... />
-  </CardFooter>
-</Card>
-```
+- Card em `cards/{entity}-card/index.tsx` — named export.
+- Subcomponentes em `composition-pattern/cards/{entity}/` → barrel `{Entity}CardUI`.
+- Um arquivo por peça (`question.tsx`, `answer.tsx`, …). Card só orquestra. Subcomponentes puros.
 
-- Subcomponentes em `composition-pattern/cards/{entity}/` → export `{Entity}CardUI`.
-- Um subcomponente por arquivo (`title.tsx`, `cover-media.tsx`, `color-preview.tsx`, etc.).
-- Card orquestra; subcomponentes são puros (só props).
-
-## Drawers (`drawers/{entity-plural}/`)
+## Drawers
 
 - `Sheet` shadcn: create `side="right"`, edit `side="left"`.
 - `{Entity}ActionsProvider` envolvendo conteúdo.
-- Constante `CREATE_{ENTITY}_FORMULARY_ID` / `EDIT_{ENTITY}_FORMULARY_ID`.
-- `is_pending` bloqueia close enquanto submit.
-- Footer fora do `<form>`:
+- Constante `CREATE_{ENTITY}_FORMULARY_ID`.
+- `is_pending` bloqueia close.
+- Footer **fora** do `<form>`: Cancelar / Resetar (`form={id}`) / Finalizar (`form={id}`).
+- Com mídia: `ProgressModal` + `useUploadProgressModal({ key: '{prefix}_progress' })` + revoke/`clearAll` no close.
 
-```tsx
-<Button variant="ghost" onClick={handleClose}>Cancelar</Button>
-<Button variant="outline" type="reset" form={FORM_ID}>Resetar</Button>
-<Button type="submit" form={FORM_ID}>Finalizar</Button>
-```
+## Modal de revisão
 
-- Create **com revisão** (campaigns): footer usa **Revisar** no lugar de Finalizar — ver seção abaixo.
-- Com mídia: `ProgressModal` + `useUploadProgressModal({ key: '{prefix}_progress' })` + cleanup `useFiles`/`useMedias` no close.
+Só se o módulo exige revisão antes do POST (campaigns). Dialog **local** (`useState`), não URL. Ver skill antiga campaigns se precisar.
 
-## Modal de revisão na criação (campaigns e futuros)
+## Modais extras
 
-Quando o módulo exige revisão antes do POST:
-
-- Local: `modals/{entity-plural}/confirm-{entity}-creation-dialog/`
-- shadcn `Dialog`; control **local** no create drawer (`useState`), não URL
-- Footer create drawer: Cancelar | Resetar | **Revisar** (`type="button"` — valida RHF e abre dialog)
-- Dialog: `{Entity}FormularyUI.Summary` + botões "Preciso mudar" | "Confirmar criação"
-- `useConfirm()` antes do POST; mutation via `{Entity}ActionsContext`
-- JSON puro: **sem** `ProgressModal`
-- Bloquear close do dialog enquanto `is_pending` (`onInteractOutside` / `onEscapeKeyDown`)
-
-## Modais extras (`modals/{entity-plural}/`)
-
-- shadcn `Dialog`, não HeroUI `Modal`.
-- Props: `control: ModalControlQueryControl` + dados da entidade.
-- Pode usar control local `{ open, onOpenChange }` fora da listagem (ex.: seasons).
-
-## Exports
-
-- Page components: `default export`.
-- Cards, drawers, formularies, actions: `named export`.
+- shadcn `Dialog`. Props: `control: ModalControlQueryControl` + dados.
+- Named export em cards/drawers/actions. Page: default export.
