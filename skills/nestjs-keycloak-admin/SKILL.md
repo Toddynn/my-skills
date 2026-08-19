@@ -5,7 +5,19 @@ description: Keycloak no NestJS — Authorization Code BFF com sessão Redis, cl
 
 # Keycloak — login BFF + Admin REST
 
-Padrão de `clube-backend` (`keycloak-auth`, `administrators-admin`, `keycloak-partner-users-admin`). Frontend: skills `nextjs-login-keycloak` / `vite-login-keycloak`. Estrutura Nest: skill `nestjs-module`.
+## Exemplos
+
+Origem histórica: Nest Keycloak. **Não** precisa do repo origem. Paths REST: [reference.md](reference.md).
+
+- [`examples/keycloak-api.ts`](examples/keycloak-api.ts)
+- [`examples/get-system-access-token.ts`](examples/get-system-access-token.ts) — M2M
+- [`examples/get-login-url.ts`](examples/get-login-url.ts) — `state`/`nonce`
+- [`examples/authorization-code-token.ts`](examples/authorization-code-token.ts)
+- [`examples/assign-client-roles.ts`](examples/assign-client-roles.ts)
+- [`examples/create-administrator.ts`](examples/create-administrator.ts)
+- [`examples/to-keycloak-api-error.ts`](examples/to-keycloak-api-error.ts)
+
+Módulos Nest: `keycloak-auth`, `administrators-admin`, `keycloak-partner-users-admin`. Frontend: `nextjs-login-keycloak` / `vite-login-keycloak`. Estrutura: `nestjs-module`.
 
 Dois grants, dois axios, dois realms (admin / partner). Paths completos: [reference.md](reference.md).
 

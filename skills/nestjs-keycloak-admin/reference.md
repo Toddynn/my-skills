@@ -1,6 +1,6 @@
 # Keycloak Admin REST + OIDC — paths
 
-Complemento de [SKILL.md](SKILL.md). `clube-backend`.
+Complemento de [SKILL.md](SKILL.md). Paths Admin REST + OIDC.
 
 ## Axios
 
