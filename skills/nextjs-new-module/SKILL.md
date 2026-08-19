@@ -5,6 +5,10 @@ description: Checklist para criar um novo módulo admin CRUD do zero (posts/prod
 
 # Novo módulo admin CRUD — checklist
 
+## Exemplos
+
+Checklist só orquestra. Código canônico nas skills listadas acima.
+
 Antes de codar, defina: **nome da entidade**, **prefixo URL** (`xx_`), **tem mídia?** (multipart + progress) ou **JSON puro?**
 
 Rules detalhadas: `nextjs-module`, `nextjs-search-params`, `nextjs-actions`, `nextjs-composition`, `nextjs-forms`, `nextjs-upload`.
