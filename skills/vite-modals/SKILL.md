@@ -3,54 +3,38 @@ name: vite-modals
 description: Modais/drawers controlados por URL com useModalControlQuery. Use when adding Dialog, Sheet, drawer, select-modal, confirm-modal, or URL-controlled overlay state.
 ---
 
-# Modais via URL
+# Modais via URL (Vite)
 
-Hook global: `hooks/use-modal-control-query`.
+**Sem nuqs.** Search da rota TanStack. Canônico: passin `hooks/use-modal-control-query.ts`. Next admin ainda usa nuqs (skill `nextjs-search-params`) — **não** misturar.
 
-Schema global: `shared/schemas/modal-control-search-params.ts`.
+## Exemplos
 
-## Keys suportadas
+- [`examples/use-modal-control-query.ts`](examples/use-modal-control-query.ts)
+- [`examples/modal-control-search-params.ts`](examples/modal-control-search-params.ts)
+- [`examples/open-edit-widget-modal-action.tsx`](examples/open-edit-widget-modal-action.tsx)
 
-`modal`, `drawer`, `secondary-drawer`, `secondary-modal`, `filter-modal`, `select-modal`, `confirm-modal`, `dropdown`, `redirect-modal`, `loading-modal`.
+## Hook
 
-- Preferir `Dialog` (`modal` / `select-modal` / …)
-- `drawer` / `secondary-drawer` + `Sheet` quando UX lateral fizer sentido — manter keys no schema mesmo se pouco usadas hoje
-
-## Uso
+`useSearch({ strict: false })` + `router.navigate`. Key tipada `ModalControlKey`. Fechar grava `undefined` (some da URL), não `null`.
 
 ```ts
-const { control, state, set } = useModalControlQuery('edit-external-video', {
-  key: 'modal',           // default
-  hasState: true,         // valor `action:id`
-  onlyExplicitOpen: true, // opcional
-});
+const { control, state, set } = useModalControlQuery('create-widget', { key: 'modal' });
 ```
 
-- `action_name` estável por fluxo (`create-external-video`, `edit-external-video`, `confirm`, …)
-- Com ID: `hasState: true` → URL `modal=edit-external-video:123`
-- Confirm global usa key `confirm-modal` (via ConfirmProvider)
+- Default `openBehaviour` / `closeBehaviour`: `'replace'`
+- `control.open` / `control.onOpenChange(boolean)`
+- `set(true | false | string)` — string vira `action:value`
+- `onlyExplicitOpen`: ignora `onOpenChange(true)`
+- `hasState: true` → split `rawValue` em `action:state`
 
-## Action que abre modal
+Create: `action_name` estável (`create-widget`). Edit: id no action_name `` `edit-widget:${id}` ``, **sem** `hasState`.
 
-```tsx
-export function OpenEditExternalVideoModalAction({ external_video, … }: Props) {
-  const { control } = useModalControlQuery(`edit-external-video`, { /* ou com id */ });
-  return (
-    <Fragment>
-      <Button onClick={() => control.onOpenChange(true)} />
-      <EditExternalVideoModal control={control} externalVideo={external_video} />
-    </Fragment>
-  );
-}
-```
+Confirm: key `confirm-modal`, action `confirm` (`vite-confirm`).
 
-## Modal
+## Keys no schema da rota
 
-- Props: `control: ModalControlQueryControl` (+ entidade se edit)
-- Monta formulary com `actions={<DialogFooter>…</DialogFooter>}`
-- Fechar no success: `on_success_callback={() => control.onOpenChange(false)}`
-- Bloquear close enquanto `isPending` quando fizer sentido
+`.extend(modalControlSearchParams.shape)`. Keys do schema: `modal`, `drawer`, `secondary-drawer`, `secondary-modal`, `filter-modal`, `select-modal`, `confirm-modal`, `dropdown`, `redirect-modal`, `loading-modal`.
 
-## Search schema da rota
+## Action + modal
 
-Toda rota com modal deve `.extend(modalControlSearchParams.shape)` no Zod de search.
+`<Fragment>` Button + Modal. Modal recebe `control`. Success: `control.onOpenChange(false)`. Bloquear close se `isPending`.
