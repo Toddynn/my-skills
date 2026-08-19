@@ -5,6 +5,11 @@ description: Estrutura de pastas, rotas TanStack e colocation com -shared (Vite 
 
 # Estrutura de pastas e rotas
 
+## Exemplos
+
+- [`examples/tree.txt`](examples/tree.txt) — árvore `src/`
+- [`examples/route-index.tsx`](examples/route-index.tsx) — `createFileRoute` mínimo
+
 Stack: Vite + React + TanStack Router (file-based). **Não** usar padrões Next (`'use client'`, App Router, RSC).
 
 ## Árvore `src/`

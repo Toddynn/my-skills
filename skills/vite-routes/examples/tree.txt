@@ -1,0 +1,9 @@
+src/
+├── routes/
+│   ├── _private/widgets/
+│   │   ├── index.tsx
+│   │   └── -shared/
+│   └── _public/login/index.tsx
+├── components/ui/{cards,formularies,modals,composition-pattern}/
+├── shared/{constants,functions,interfaces,schemas,stores}/
+└── lib/providers/
