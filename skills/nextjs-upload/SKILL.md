@@ -5,57 +5,26 @@ description: Upload de mídia, zustand e ProgressModal para módulos admin com a
 
 # Mídia e upload — módulos com arquivos
 
-Aplicar em: **posts**, **products**, **banner-set**. Não aplicar em **rankings** (JSON puro).
+Aplicar em módulos com arquivo (posts, products, banner-set, **faq**). JSON puro: pular.
 
-## Estado de arquivos
+## Exemplos
+
+- [`examples/build-form-data.ts`](examples/build-form-data.ts)
+- [`examples/use-upload-progress-modal.ts`](examples/use-upload-progress-modal.ts) — copiar `hooks/use-upload-progress-modal`
+- [`examples/progress-modal.tsx`](examples/progress-modal.tsx) — copiar `components/ui/progress-modal`
+
+Drawer FAQ de referência: `nextjs-composition` [`create-faq-drawer.tsx`](../nextjs-composition/examples/create-faq-drawer.tsx).
+
+## Estado
 
 | Store | Uso |
 |-------|-----|
-| `useFiles` | arquivos novos no create/edit |
+| `useFiles` | arquivos novos create/edit |
 | `useMedias` | mídias existentes no edit |
 
-- Arquivo **não** vai no `useForm` como blob principal — campo `file` opcional no schema form-fields via `FileSchema`.
-- Lista real de uploads: `files` do zustand, mapeada para `archives` no actions hook.
+Arquivo **não** é o blob principal do `useForm`. Lista real: `files` zustand → `archives` no actions hook.
 
-## Formulary — create
-
-- `FileUploader` dentro de `Controller` (`name="file"`).
-- `acceptedTypes`: `image_types` (+ `video_types` em banner-set).
-- `maxSize`: constante local (ex.: `20 * 1024 * 1024`).
-- `onFileChange` → `field.onChange(file)`.
-
-## Formulary — edit
-
-- `useMedias`: `setMedias(entity.medias)` no `useEffect`.
-- `AddedMedias` para exibir/remover existentes.
-- `delete_media` via mutation inline + `removeMediaById`.
-- Novos arquivos ainda via `useFiles` + `FileUploader`.
-
-## Actions hook — multipart
-
-```ts
-const archives = files.map(({ file, icon }) => ({ icon, archive: file }));
-const parsed = await CreateSchema.parseAsync({ ...form_fields, archives });
-const formData = buildCreateFormData(parsed);
-await api.post(route, formData, {
-  ...multipart_form_header,
-  signal: abort_controller_ref.current?.signal,
-  onUploadProgress: (e) => setRequestProgress(...),
-});
-```
-
-- `appendArchives`: `archives`, `icon`, `redirectUrl` (banner-set).
-- Edit: só append campos presentes no parsed.
-
-## Drawer — lifecycle
-
-**Create close:** revoke `URL.createObjectURL` de cada file + `clearAll()`.
-
-**Edit close:** revoke files + `clearAllFiles()` + `clearAllMedias()`.
-
-**Bloqueio:** não fechar sheet se `is_pending`.
-
-## ProgressModal
+## Drawer + ProgressModal
 
 ```ts
 const { cancel_upload, control, on_progress_modal_close } = useUploadProgressModal({
@@ -65,16 +34,19 @@ const { cancel_upload, control, on_progress_modal_close } = useUploadProgressMod
 });
 ```
 
-- Drawer passa `on_fail_callback={on_progress_modal_close}`.
+- `isUploading` true → abre URL (`set(true)`). False → fecha após min 500ms visível.
+- `cancel_upload` aborta `AbortController` + fecha.
 - Success: `on_progress_modal_close()` + `handleClose()`.
-- `ProgressModal`: `progress={actions.request_progress}`, `onCancelRequest={cancel_upload}`.
+- Fail: `on_fail_callback={on_progress_modal_close}`.
+- `<ProgressModal control={progress_control} isLoading={is_pending} progress={actions.request_progress} onCancelRequest={cancel_upload} />`
+- Close do sheet bloqueado se `is_pending`. Revoke `URL.createObjectURL` + `clearAll()`.
 
-## Banner-set específico
+`ProgressModal`: Dialog; não fecha com X enquanto `isLoading`; botão cancel só com upload ativo.
 
-- Vídeo permitido; `redirectUrl` em archives.
-- Pode forçar `active: false` sem mídia no create.
+## Actions multipart
 
-## Products específico
+`FormData` + `multipart_form_header` + `onUploadProgress` → `setRequestProgress`. `appendArchives`. Signal do abort controller.
 
-- `update_media_icon` para toggle em mídia existente.
-- Modal de usuários elegíveis com search params próprios.
+## Formulary
+
+Create: `FileUploader` no `Controller` `name="file"`. Edit: `useMedias` + `AddedMedias` + novos via `useFiles`.
