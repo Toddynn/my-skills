@@ -5,85 +5,54 @@ description: React Hook Form + Zod formularies (Controller/Field shadcn). Use wh
 
 # Formularies e validação
 
-## Onde fica cada pedaço
+Canônico: `CreatePromptFormulary`. **Não** `useFormContext` em field separado. `useForm` + `Controller` no mesmo arquivo.
+
+## Exemplos
+
+- [`examples/create-prompt-formulary.tsx`](examples/create-prompt-formulary.tsx)
+- [`examples/create-prompt-schema.ts`](examples/create-prompt-schema.ts)
+- [`examples/create-prompt-form.ts`](examples/create-prompt-form.ts) — `InferZod<typeof Schema>`
+
+## Onde
 
 | Peça | Local |
 |------|-------|
-| Schema Zod CRUD | `routes/<module>/-shared/schemas/` |
-| Interface do form | `routes/<module>/-shared/interfaces/*-form.ts` |
-| Formulary UI | `components/ui/formularies/<domain>/` |
-| File schema global | `shared/schemas/file-schema.ts` |
+| Schema Zod | `routes/<module>/-shared/schemas/` |
+| Tipo form | `routes/<module>/-shared/interfaces/*-form.ts` |
+| Formulary | `components/ui/formularies/<domain>/` |
 
 ## useForm
 
 ```ts
-useForm<FormType>({
-  defaultValues: { … },
+useForm<CreatePromptForm>({
+  defaultValues: { title: '', template: '', isPublic: false, categoryId: '' },
   disabled: isPending,
-  resolver: standardSchemaResolver(ZodSchema),
+  resolver: standardSchemaResolver(CreatePromptSchema),
 });
 ```
 
-- Zod v4 (`zod/v4`)
-- Strings: `.trim().min(1, '…')` — nunca validar só `undefined`
-- Submit: `handleSubmit(onSubmit)` → só chama action se Zod do form passar
+- Zod v4 (`zod/v4`). String: `.trim().min(1, '…')` + `string({ error: (issue) => issue.input === undefined ? '… obrigatório' : undefined })`.
+- `<form id="…" onSubmit={handleSubmit(onSubmit)} onReset={handleReset}>`
+- `{actions}` **dentro** do form (footer do modal injeta botões `form={id}`).
+- Named export `export function CreatePromptFormulary`.
 
-## Campos — padrão
+## Campos
 
-Todo campo com `Controller` + shadcn `Field`:
+Todo campo: `Controller` + `Field` + `FieldError`. Texto: `InputGroup` + `InputGroupAddon` + `InputGroupInput`/`Textarea`. Obrigatório: `FieldLabelRequired`. Boolean: `Switch` + `Field` `orientation="responsive"` + `FieldDescription`. Select de domínio: Trigger composition (`PromptCategoriesTriggers.SelectPromptCategory`).
 
-```tsx
-<Controller
-  name="sourceUrl"
-  control={control}
-  render={({ field, fieldState }) => (
-    <Field data-invalid={fieldState.invalid}>
-      <FieldLabel htmlFor={field.name}>
-        Label <FieldLabelRequired />
-      </FieldLabel>
-      <FieldContent>
-        <InputGroup>
-          <InputGroupInput {...field} id={field.name} aria-invalid={fieldState.invalid} />
-        </InputGroup>
-      </FieldContent>
-      <FieldError errors={[fieldState.error]} />
-    </Field>
-  )}
-/>
-```
+**Não** wrapper opaco escondendo `Controller`. **Não** `useFormContext` pra field filho neste padrão.
 
-- **Não** esconder `Controller` em wrapper opaco
-- Switch/boolean: `Field` horizontal + `Switch`
+## Mutation
 
-## Mutation no formulary
+`useMutation` no formulary chama `usePromptsActions().createPrompt`. Toast + `reset()` + `on_success_callback` no success. Invalidate via fn `*_query_key` (pode ser array concat se duas lists).
 
-```ts
-const { mutateAsync, isPending } = useMutation({
-  mutationFn: async (form_data) =>
-    await createX({
-      form_data,
-      query_keys_to_invalidate: private_get_all_x_query_key({}),
-      on_success: () => handleSuccess(),
-    }),
-});
-```
-
-- Toast no success do formulary
-- `actions: React.ReactNode` = footer do modal (submit/reset/cancel via `form={id}`)
-- `on_success_callback` fecha modal
-
-## Props padrão
+## Props
 
 ```ts
 interface Props {
   actions: React.ReactNode;
   on_success_callback?: () => void;
-  on_fail_callback?: () => void;
 }
 ```
 
-Edit recebe também a entidade.
-
-## Named export
-
-`export function CreateExternalVideoFormulary` — sem default.
+Edit recebe a entidade também.
