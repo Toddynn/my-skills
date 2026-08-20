@@ -50,9 +50,10 @@ export const usePrivateGetAllExternalVideos = ({ search, page = 1, limit = 10, e
 - UI: `InfiniteList` + `onEndReached={fetchNextPage}`
 - Response tipada com `DefaultPaginatedResponse<T>`
 
-## Detail
+## Detail / Suspense
 
-- Preferir `useSuspenseQuery` quando a rota já garante dados (loader/`beforeLoad`/suspense boundary)
+- Preferir `useSuspenseQuery` + `ErrorBoundary` + `Suspense` + Skeleton — ver [`vite-suspense-query`](../vite-suspense-query/SKILL.md)
+- **Não** usar `isPending`/`isError` no consumidor quando o padrão suspense aplica
 
 ## Invalidação
 
