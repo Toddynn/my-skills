@@ -11,6 +11,6 @@ export const resetQueries = async ({
 }: ResetQueriesProps) => {
 	await query_client.resetQueries({
 		predicate: (query) =>
-			query_keys_to_reset.includes(String(query.queryKey.at(0))),
+			query_keys_to_reset.includes(String(query.queryKey[0])),
 	});
 };
