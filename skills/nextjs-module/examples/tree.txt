@@ -2,10 +2,17 @@ src/app/(private)/widgets/
 ├── page.tsx
 ├── components/header/index.tsx
 ├── components/widget-list/index.tsx
-├── schemas/
-├── interfaces/
 └── shared/
     ├── contexts/widget-actions-context.tsx
-    └── functions/
-        ├── use-widget-search-params.ts
-        └── use-widget-actions.ts
+    ├── functions/
+    │   ├── use-widget-search-params.ts
+    │   └── use-widget-actions.ts
+    ├── schemas/
+    │   ├── create-widget-form-fields-schema.ts
+    │   ├── create-widget-schema.ts
+    │   ├── edit-widget-form-fields-schema.ts
+    │   └── edit-widget-schema.ts
+    ├── interfaces/
+    │   ├── create-widget-form-fields.ts
+    │   └── edit-widget-form-fields.ts
+    └── constants/

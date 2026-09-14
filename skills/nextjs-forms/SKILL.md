@@ -21,8 +21,9 @@ description: React Hook Form, schemas Zod e formularies dos módulos admin CRUD.
 | `edit-{entity}-schema.ts` | `CreateSchema.partial()` para PATCH parcial |
 
 - Form-fields: strings com `.trim().min(1, '...')` — **nunca** validar só `undefined` (string vazia passa).
-- Interfaces: `type X = infer_zod<typeof Schema>` em `interfaces/*-form-fields.ts`.
+- Interfaces: `type X = infer_zod<typeof Schema>` em `shared/interfaces/*-form-fields.ts`.
 - Constantes de default (cores, limites) no schema form-fields quando fizer sentido.
+- Schemas/interfaces/constants do módulo ficam em `shared/` — **não** na raiz do módulo.
 
 ## Formulary (`formularies/{entity-plural}/`)
 

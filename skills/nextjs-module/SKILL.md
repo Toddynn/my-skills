@@ -18,25 +18,24 @@ Referências: `posts`, `products`, `banner-set`, `rankings`, `campaigns`.
 page.tsx
 components/header/index.tsx
 components/{entity}-list/index.tsx
-schemas/
-  create-{entity}-form-fields-schema.ts
-  edit-{entity}-form-fields-schema.ts
-  create-{entity}-schema.ts      # payload API
-  edit-{entity}-schema.ts          # geralmente partial do create
-interfaces/
-  create-{entity}-form-fields.ts   # infer_zod do form-fields schema
-  edit-{entity}-form-fields.ts
 shared/
   contexts/{entity}-actions-context.tsx
   functions/
     use-{entity}-search-params.ts
     use-{entity}-actions.ts
     use-{entity}-table-query-filters.ts   # se listagem montar params da API
-  constants/                               # se precisar (labels/parsers de filtro)
+  schemas/
+    create-{entity}-form-fields-schema.ts
+    edit-{entity}-form-fields-schema.ts
+    create-{entity}-schema.ts             # payload API
+    edit-{entity}-schema.ts               # geralmente partial do create
+  interfaces/
+    create-{entity}-form-fields.ts        # infer_zod do form-fields schema
+    edit-{entity}-form-fields.ts
+  constants/                              # labels/parsers de filtro, column visibility, etc.
 ```
 
-- Hooks/utils do módulo ficam em `shared/functions/` — **não** criar `functions/` solto na raiz do módulo.
-- Contexts/stores/constants do módulo ficam em `shared/`.
+- Tudo do módulo (hooks, schemas, interfaces, constants, contexts, stores) fica em `shared/` — **não** criar `functions/`, `schemas/`, `interfaces/` ou `constants/` soltos na raiz do módulo.
 - Tipo de domínio (`Post`, `Product`, etc.) fica em `src/shared/functions/tanstack-query/get/`, não no módulo.
 - Filtros extras do módulo: `components/filter-by-*/` (ex.: products).
 - **Não** criar rotas `/create` ou `/edit/[id]` — CRUD via Sheet na listagem.

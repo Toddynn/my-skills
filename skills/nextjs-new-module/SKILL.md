@@ -19,8 +19,8 @@ Rules detalhadas: `nextjs-module`, `nextjs-search-params`, `nextjs-actions`, `ne
 - [ ] `shared/functions/use-{entity}-search-params.ts` — `{prefix}_search`, `{prefix}_page`, debounce, `clearSearch` (+ filtros se precisar)
 - [ ] `components/header/index.tsx` — `SearchInputGroup` + `{Entity}Actions.OpenCreate{Entity}Drawer`
 - [ ] `components/{entity}-list/index.tsx` — GET hook, loader/error/empty, map card, `DefaultListFooter`
-- [ ] `schemas/` — `*-form-fields-schema` (RHF) + `*-schema` (API)
-- [ ] `interfaces/` — `infer_zod` dos form-fields
+- [ ] `shared/schemas/` — `*-form-fields-schema` (RHF) + `*-schema` (API)
+- [ ] `shared/interfaces/` — `infer_zod` dos form-fields
 - [ ] `shared/functions/use-{entity}-actions.ts` — create/edit/delete (+ media helpers se multipart)
 - [ ] `shared/contexts/{entity}-actions-context.tsx`
 
