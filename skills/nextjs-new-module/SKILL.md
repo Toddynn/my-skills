@@ -16,7 +16,7 @@ Rules detalhadas: `nextjs-module`, `nextjs-search-params`, `nextjs-actions`, `ne
 ## 1. Módulo `src/app/(private)/{module}/`
 
 - [ ] `page.tsx` — RSC, prefetch GET, `HydrationBoundary`, shell section + header + list
-- [ ] `functions/use-{entity}-search-params.ts` — `{prefix}_search`, `{prefix}_page`, debounce, `clearSearch` (+ filtros se precisar)
+- [ ] `shared/functions/use-{entity}-search-params.ts` — `{prefix}_search`, `{prefix}_page`, debounce, `clearSearch` (+ filtros se precisar)
 - [ ] `components/header/index.tsx` — `SearchInputGroup` + `{Entity}Actions.OpenCreate{Entity}Drawer`
 - [ ] `components/{entity}-list/index.tsx` — GET hook, loader/error/empty, map card, `DefaultListFooter`
 - [ ] `schemas/` — `*-form-fields-schema` (RHF) + `*-schema` (API)

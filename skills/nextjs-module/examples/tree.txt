@@ -1,10 +1,11 @@
 src/app/(private)/widgets/
 ├── page.tsx
-├── functions/use-widget-search-params.ts
 ├── components/header/index.tsx
 ├── components/widget-list/index.tsx
 ├── schemas/
 ├── interfaces/
 └── shared/
     ├── contexts/widget-actions-context.tsx
-    └── functions/use-widget-actions.ts
+    └── functions/
+        ├── use-widget-search-params.ts
+        └── use-widget-actions.ts

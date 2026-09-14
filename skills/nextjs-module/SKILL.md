@@ -16,7 +16,6 @@ Referências: `posts`, `products`, `banner-set`, `rankings`, `campaigns`.
 
 ```
 page.tsx
-functions/use-{entity}-search-params.ts
 components/header/index.tsx
 components/{entity}-list/index.tsx
 schemas/
@@ -29,12 +28,16 @@ interfaces/
   edit-{entity}-form-fields.ts
 shared/
   contexts/{entity}-actions-context.tsx
-  functions/use-{entity}-actions.ts
+  functions/
+    use-{entity}-search-params.ts
+    use-{entity}-actions.ts
+    use-{entity}-table-query-filters.ts   # se listagem montar params da API
+  constants/                               # se precisar (labels/parsers de filtro)
 ```
 
-- Search params ficam em `functions/`, não em `shared/`.
-- Actions + context ficam em `shared/`.
-- Tipo de domínio (`Post`, `Product`, etc.) fica em `shared/functions/tanstack-query/get/`, não no módulo.
+- Hooks/utils do módulo ficam em `shared/functions/` — **não** criar `functions/` solto na raiz do módulo.
+- Contexts/stores/constants do módulo ficam em `shared/`.
+- Tipo de domínio (`Post`, `Product`, etc.) fica em `src/shared/functions/tanstack-query/get/`, não no módulo.
 - Filtros extras do módulo: `components/filter-by-*/` (ex.: products).
 - **Não** criar rotas `/create` ou `/edit/[id]` — CRUD via Sheet na listagem.
 
