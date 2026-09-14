@@ -63,6 +63,9 @@ Exemplo `videos`:
 routes/_private/videos/
 ├── index.tsx
 ├── -shared/                 # listagem / CRUD vídeo
+├── new/
+│   ├── index.tsx
+│   └── -shared/             # só da página de criação
 └── $id/
     ├── index.tsx
     ├── -shared/             # só utilidades do video_id
@@ -71,7 +74,9 @@ routes/_private/videos/
         └── -shared/         # só completions
 ```
 
-- `-shared` de `$id` **não** sobe utilidades genéricas de listagem.
+- `-shared` de `$id`/`new` **não** sobe utilidades genéricas de listagem.
+- **Toda página com rota própria** (`new`, `$id`, etc.) vai **na sua pasta**, nunca solta como `new.tsx`/`$id.tsx` na raiz do módulo — senão o `-shared` daquela página some dentro do `-shared` do módulo inteiro.
+- Algo usado por **mais de uma sub-rota** (ex.: header de formulário usado por `new` e `$id`) sobe para o `-shared` do nível pai comum — não duplicar.
 - Header/constantes locais da página podem ficar em `-shared/components` e `-shared/constants`.
 - **Cards de domínio** vão em `components/ui/cards/` — **não** deixar card em `-shared` (mesmo se “só home”).
 

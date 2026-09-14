@@ -24,6 +24,7 @@ Rules: `vite-routes`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite
 
 - [ ] `index.tsx` — `createFileRoute`, `head`, `validateSearch` (Zod parse), `loader` crumb + `LoadingPage`, `notFoundComponent`, `component: RouteComponent` **local** (não export)
 - [ ] `beforeLoad` opcional (prompts: count)
+- [ ] Se o módulo tiver página cheia de `new` ou `$id` (rota própria, não modal): **cada uma na sua pasta** — `{module}/new/index.tsx`, `{module}/$id/index.tsx`, cada uma com seu próprio `-shared/` (ver `vite-routes`, exemplo `videos`). Só o que é usado por **>1 sub-rota** sobe para `{module}/-shared/`. Não deixar `new.tsx`/`$id.tsx` soltos na raiz do módulo — daí o `-shared` de página vira `-shared` do módulo inteiro e perde o escopo
 - [ ] `-shared/schemas/*-search-params.ts` — defaults string + `.extend(modalControlSearchParams.shape)`
 - [ ] `-shared/functions/use-*-query-states.ts` — `Route.useSearch` + `useNavigate` + `useDebounce` + `reset('page')`
 - [ ] `-shared/functions/use-*-actions.ts` — create/edit/delete
