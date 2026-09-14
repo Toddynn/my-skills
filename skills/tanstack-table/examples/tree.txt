@@ -1,0 +1,19 @@
+{entity}-table/
+├── index.tsx
+├── columns.tsx
+├── column-header.tsx
+├── actions.tsx
+├── view-options.tsx
+├── data-table.tsx
+└── cells/
+    ├── {entity}-name-cell.tsx
+    └── {entity}-actions-cell.tsx
+
+# store (feature)
+.../stores/{entity}-table-store/index.ts
+
+# app-wide
+shared/functions/table/get-common-column-pinning-styles.ts
+shared/stores/data-table-store/create-data-table-store.ts
+shared/@types/table.d.ts
+components/ui/table.tsx
