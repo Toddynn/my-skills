@@ -55,6 +55,7 @@ components/ui/table.tsx                                    # overflow-x-auto no 
 | Visibility | sim | store + `view-options` |
 | Sizing/pin persist | sim | Zustand `persist` |
 | Overflow sticky | sim | card `overflow-hidden` + Table `overflow-x-auto` + `border-separate` + `getTotalSize()` |
+| Stretch | sim | fator `container_width / getTotalSize()` quando sobra espaço no card |
 | Page size | sim | `PageSizeSelect` + search params |
 | Row selection | se bulk | local state; **não** persistir; clear ao mudar filtro |
 | `meta.label` | sim | labels do view-options |
@@ -78,14 +79,50 @@ Sem isso, coluna fixa **estoura** o overflow / vaza do card.
 
 1. Card: `min-w-0 w-full max-w-full overflow-hidden rounded-xl border bg-card`
 2. `Table` UI: container interno `overflow-x-auto` (já no `components/ui/table.tsx`)
-3. `<table>`: `border-separate border-spacing-0` + `style={{ width: table.getTotalSize() }}`
+3. `<table>`: `border-separate border-spacing-0` + largura do § Stretch
 4. **Não** usar `table-fixed`
 5. Header: sempre `bg-background` (opaco)
 6. Cell pinned: `bg-card`
-7. Styles: `width`/`minWidth` no JSX + `...getCommonColumnPinningStyles(column)`
+7. Styles: `width`/`minWidth` no JSX + `...getCommonColumnPinningStyles(column, stretch)`
 8. Key do head: `` `${header.id}:${String(pinned)}` ``
 
 Ver [`examples/overflow-shell.tsx`](examples/overflow-shell.tsx).
+
+## Stretch — preencher o card (obrigatório)
+
+`width: table.getTotalSize()` fixo deixa a tabela **terminando no meio do card** quando
+a soma das `size` é menor que o container (poucas colunas, tela larga). As `size`
+devem valer como **proporção**, não pixel absoluto:
+
+```tsx
+// Mede o card, não a <table>: a largura do card é imposta pelo layout, então
+// não há realimentação quando as colunas esticam.
+const container_ref = useRef<HTMLDivElement>(null);
+const [container_width, setContainerWidth] = useState(0);
+
+useLayoutEffect(() => {
+  const element = container_ref.current;
+  if (!element) return;
+  const observer = new ResizeObserver(([entry]) => setContainerWidth(entry.contentRect.width));
+  observer.observe(element);
+  return () => observer.disconnect();
+}, []);
+
+const total_size = table.getTotalSize();
+const stretch = container_width > total_size ? container_width / total_size : 1;
+```
+
+Aplicar o fator em **três** lugares — esquecer um desalinha a tabela:
+
+| Lugar | Valor |
+|-------|-------|
+| `<table>` | `width: stretch > 1 ? container_width : total_size` |
+| head/cell | `width: column.getSize() * stretch` |
+| pin styles | `getCommonColumnPinningStyles(column, stretch)` — escala `getStart`/`getAfter` |
+
+- `minWidth` **não** escala: é piso de legibilidade, não proporção.
+- Faltando espaço, `stretch === 1` e o comportamento é exatamente o de antes (scroll horizontal).
+- Resize continua natural: encolher uma coluna faz as outras absorverem a sobra.
 
 ## Pinning styles
 
@@ -161,7 +198,7 @@ Resize **não** fica aqui — handle absoluto no `TableHead` do data-table:
     aria-label={`Redimensionar coluna ${header.column.id}`}
     onMouseDown={header.getResizeHandler()}
     onTouchStart={header.getResizeHandler()}
-    className="absolute top-0 right-0 h-full w-1 cursor-col-resize touch-none border-0 p-0 hover:bg-border"
+    className="absolute top-0 right-0 h-full w-px cursor-col-resize touch-none border-0 p-0 hover:bg-border"
   />
 )}
 ```
@@ -240,6 +277,7 @@ declare module '@tanstack/react-table' {
 - Header/cell pinned sem background opaco
 - `enablePinning` default true
 - Persistir row selection
-- Esquecer `width: table.getTotalSize()`
+- Esquecer `width: table.getTotalSize()` (ou fixá-la sem o fator de stretch — a tabela termina no meio do card)
+- Aplicar o stretch na largura mas não no `getCommonColumnPinningStyles` — coluna fixa desalinha
 - Esquecer key `` `${id}:${pinned}` `` no head
 - Skill/código split Vite vs Next — só `'use client'` / paths diferem
