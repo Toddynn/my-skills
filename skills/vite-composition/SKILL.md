@@ -82,6 +82,7 @@ export function ExternalVideoCard({ externalVideo, ...props }: Props) {
 - Formulary em `formularies/{domain}/` — RHF + Zod
 - Modal em `modals/{domain}/` — recebe `control: ModalControlQueryControl`
 - Footer do dialog injetado via prop `actions` no formulary
+- Multi-step (tabs + revisão): skill `vite-multi-step-forms`
 - Sheet/drawer: usar `components/ui/sheet` + chave URL `drawer` / `secondary-drawer` quando precisar (mesmo padrão de modal)
 
 ## Exports

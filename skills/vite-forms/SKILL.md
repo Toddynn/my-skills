@@ -1,6 +1,6 @@
 ---
 name: vite-forms
-description: React Hook Form + Zod formularies (Controller/Field shadcn). Use when creating forms, Zod schemas, Controller/Field, formularies, or RHF + shadcn Field.
+description: React Hook Form + Zod formularies (Controller/Field shadcn). Use when creating forms, Zod schemas, Controller/Field, formularies, or RHF + shadcn Field. If the form needs tabs, steps, wizard, or a review-confirm modal before submit, also apply vite-multi-step-forms.
 ---
 
 # Formularies e validação
@@ -56,3 +56,7 @@ interface Props {
 ```
 
 Edit recebe a entidade também.
+
+## Multi-step
+
+Carga visual, grupos distintos (arquivo/revisão/acesso), tabs, passos, revisão de dados antes de enviar → skill `vite-multi-step-forms`. Continua **um** `useForm` + `Controller` no mesmo arquivo. **Não** `useFormContext` por step. Confirm de snapshot ≠ `vite-confirm` (delete).

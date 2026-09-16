@@ -29,7 +29,7 @@ const { control, state, set } = useModalControlQuery('create-widget', { key: 'mo
 
 Create: `action_name` estável (`create-widget`). Edit: id no action_name `` `edit-widget:${id}` ``, **sem** `hasState`.
 
-Confirm: key `confirm-modal`, action `confirm` (`vite-confirm`).
+Confirm: key `confirm-modal`, action `confirm` (`vite-confirm`). Revisão de create multi-step: action estável (`confirm-widget-creation`), skill `vite-multi-step-forms` — não `useConfirm`.
 
 ## Keys no schema da rota
 

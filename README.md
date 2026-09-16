@@ -62,7 +62,7 @@ Symlinks das skills que já existiam continuam. Skill **nova** no repo: roda o `
 
 | Grupo | Skills |
 |-------|--------|
-| Vite + TanStack Router | `vite-routes`, `vite-new-module`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-zustand`, `vite-confirm`, `vite-types`, `vite-api`, `vite-env`, `vite-login-keycloak` |
+| Vite + TanStack Router | `vite-routes`, `vite-new-module`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-multi-step-forms`, `vite-zustand`, `vite-confirm`, `vite-types`, `vite-api`, `vite-env`, `vite-login-keycloak` |
 | Next.js admin CRUD | `nextjs-module`, `nextjs-new-module`, `nextjs-search-params`, `nextjs-actions`, `nextjs-composition`, `nextjs-forms`, `nextjs-upload`, `nextjs-login-keycloak` |
 | NestJS | `nestjs-module`, `nestjs-keycloak-admin` |
 

@@ -18,7 +18,7 @@ Canônico: `src/routes/_private/prompts` (content-creator). Skills irmãs têm o
 
 Antes: entidade, path, upload?, select-modal?
 
-Rules: `vite-routes`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-zustand`, `vite-confirm`, `vite-env`, `vite-types`, `vite-api`.
+Rules: `vite-routes`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-multi-step-forms`, `vite-zustand`, `vite-confirm`, `vite-env`, `vite-types`, `vite-api`.
 
 ## 1. Rota `src/routes/_private/{module}/`
 
@@ -44,6 +44,7 @@ Rules: `vite-routes`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite
 - [ ] `cards/{entity}-card/` — **não** em `-shared`
 - [ ] `composition-pattern/actions|cards|triggers/{domain}/`
 - [ ] `formularies/{domain}/` — RHF no mesmo arquivo (`vite-forms`)
+- [ ] Form pesado / tabs / revisão antes de enviar → `vite-multi-step-forms`
 - [ ] `modals/{domain}/` — `control` + `actions` no formulary
 - [ ] Delete: `useConfirm`
 

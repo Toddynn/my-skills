@@ -131,3 +131,5 @@ const { mutateAsync: handleCreate, isPending } = useMutation({
 - Recebe snapshot via props (montado no clique em Revisar no create drawer).
 - Create drawer expõe `trigger` + `getValues` do RHF (`on_form_ready`) para validar e montar payload API antes de abrir o dialog.
 - Helper `build{Entity}ApiPayload` no módulo quando form-fields divergem do schema API.
+
+Vite (tabs + um RHF + confirm de snapshot): skill `vite-multi-step-forms`. Não misturar com `useConfirm` de delete.

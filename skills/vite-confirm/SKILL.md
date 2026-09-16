@@ -29,6 +29,8 @@ Copiar os quatro arquivos. Vite usa URL (`confirm-modal`), não `useState` local
 
 Delete, side-effect irreversível. Sem `window.confirm`. Sem confirm em ação inofensiva.
 
+Revisão de create multi-step (summary antes de enviar) → skill `vite-multi-step-forms`, não este `useConfirm`.
+
 ## Action button
 
 `const res = await confirm({ title, description })`. Se `res`, `mutateAsync`. Toast no `on_success`. `isPending` → Spinner + disabled.
