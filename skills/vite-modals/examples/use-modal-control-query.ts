@@ -32,10 +32,12 @@ export const useModalControlQuery = (
 
 	const set = (open: boolean | string) => {
 		const value = open ? [action_name, ...(typeof open === 'string' ? [open] : [])].join(':') : undefined;
-		const currentSearch = router.state.location.search as Record<string, unknown>;
 
 		router.navigate({
-			search: { ...currentSearch, [key]: value } as never,
+			search: ((prev: Record<string, unknown>) => ({
+				...prev,
+				[key]: value,
+			})) as never,
 			replace: open ? openBehaviour === 'replace' : closeBehaviour === 'replace',
 		});
 	};
