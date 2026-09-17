@@ -65,6 +65,7 @@ Symlinks das skills que já existiam continuam. Skill **nova** no repo: roda o `
 | Vite + TanStack Router | `vite-routes`, `vite-new-module`, `vite-search-params`, `vite-modals`, `vite-actions`, `vite-query`, `vite-composition`, `vite-forms`, `vite-multi-step-forms`, `vite-zustand`, `vite-confirm`, `vite-types`, `vite-api`, `vite-env`, `vite-login-keycloak` |
 | Next.js admin CRUD | `nextjs-module`, `nextjs-new-module`, `nextjs-search-params`, `nextjs-actions`, `nextjs-composition`, `nextjs-forms`, `nextjs-upload`, `nextjs-login-keycloak` |
 | NestJS | `nestjs-module`, `nestjs-keycloak-admin` |
+| DevOps production-ready | `devops-nestjs`, `devops-vite`, `devops-nextjs` |
 
 Cada skill vive em `skills/<nome>/SKILL.md`. Código canônico em `skills/<nome>/examples/` (domínio `widget`). O symlink global aponta a **pasta inteira** da skill, então o agente lê os examples sem os repositórios origem. `SKILL.md` = regras. `examples/` = copiar.
 

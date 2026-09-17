@@ -1,0 +1,47 @@
+FROM node:24-alpine3.23 AS base
+
+RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# --- SCRIPTS ---
+COPY .docker/scripts/install-deps.sh /usr/local/bin/install-deps
+COPY .docker/scripts/build-app.sh /usr/local/bin/build-app
+
+RUN chmod +x /usr/local/bin/install-deps \
+     /usr/local/bin/build-app
+
+# --- DEPS ---
+FROM base AS deps
+WORKDIR /app
+
+COPY pnpm-workspace.yaml package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+RUN install-deps
+
+# --- BUILDER ---
+FROM base AS builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN build-app
+
+# --- RUNNER ---
+FROM nginx:alpine AS runner
+ENV NODE_ENV=production
+
+COPY .docker/scripts/start-server.sh /usr/local/bin/start-server
+RUN chmod +x /usr/local/bin/start-server
+
+# Remove a config padrão do Nginx
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copia o template da configuração manual do Nginx para o Nginx, isso substitui no start-server.sh (multi-env para o ngix usar o server_name correto)
+COPY .docker/nginx/nginx.conf.template /etc/nginx/conf.d/default.conf.template
+
+# Copia APENAS a pasta 'dist' gerada no builder para a pasta padrão do Nginx
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["start-server"]

@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: APP_NAME
+    hostname: APP_NAME
+    env_file:
+      - .env
+    ports:
+      - '${NEXT_PUBLIC_APP_PORT:-3000}:3000'
