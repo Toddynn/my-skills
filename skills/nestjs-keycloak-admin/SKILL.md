@@ -1,6 +1,6 @@
 ---
 name: nestjs-keycloak-admin
-description: Keycloak no NestJS — Authorization Code BFF com sessão Redis, client_credentials M2M, Admin REST (users, client roles, administrators, partner users). Use when implementing Keycloak login backend, getSystemAccessToken, KeycloakAdminService, creating administrators, assigning roles, or calling Keycloak Admin API.
+description: Keycloak no NestJS — Authorization Code BFF com sessão Redis, client_credentials M2M, Admin REST (users, client roles, realm groups, administrators, partner users). Use when implementing Keycloak login backend, getSystemAccessToken, KeycloakAdminService, creating administrators, assigning roles, managing groups, or calling Keycloak Admin API.
 ---
 
 # Keycloak — login BFF + Admin REST
@@ -15,9 +15,10 @@ Origem histórica: Nest Keycloak. **Não** precisa do repo origem. Paths REST: [
 - [`examples/authorization-code-token.ts`](examples/authorization-code-token.ts)
 - [`examples/assign-client-roles.ts`](examples/assign-client-roles.ts)
 - [`examples/create-administrator.ts`](examples/create-administrator.ts)
+- [`examples/create-keycloak-group.ts`](examples/create-keycloak-group.ts)
 - [`examples/to-keycloak-api-error.ts`](examples/to-keycloak-api-error.ts)
 
-Módulos Nest: `keycloak-auth`, `administrators-admin`, `keycloak-partner-users-admin`. Frontend: `nextjs-login-keycloak` / `vite-login-keycloak`. Estrutura: `nestjs-module`.
+Módulos Nest: `keycloak-auth`, `administrators-admin`, `keycloak-groups-admin`, `keycloak-partner-users-admin`. Frontend: `nextjs-login-keycloak` / `vite-login-keycloak`. Estrutura: `nestjs-module`.
 
 Dois grants, dois axios, dois realms (admin / partner). Paths completos: [reference.md](reference.md).
 
@@ -30,13 +31,14 @@ Dois grants, dois axios, dois realms (admin / partner). Paths completos: [refere
 
 Nunca misturar. Token M2M **não** entra na sessão do browser. Access token do humano **não** autentica Admin REST.
 
-Sem `userinfo`. Sem `introspect`. Sem groups. Roles de permissão = **client roles** do client (`resource_access[KC_*_CLIENT_ID].roles`). JWT Passport/JWKS existe em arquivo e **não** está registrado — guards leem `session.adminUser` / `session.partnerUser`.
+Sem `userinfo`. Sem `introspect`. Roles de permissão = **client roles** do client (`resource_access[KC_*_CLIENT_ID].roles`). Realm groups são **pacotes** de client roles (role-mappings no grupo); membership traz as roles pro JWT. Guards **não** checam group path — leem roles na sessão. JWT Passport/JWKS existe em arquivo e **não** está registrado — guards leem `session.adminUser` / `session.partnerUser`.
 
 ## Proibido
 
 - Admin REST no controller — só service → use case → controller
 - `clientId` no path de roles/mappings — resolver UUID via `GET /admin/realms/{realm}/clients?clientId=`
-- Criar group / realm role pra permissionamento admin
+- Criar realm role pra permissionamento admin (client roles + groups-as-bundles OK)
+- Usar group path como substituto de client role nos guards
 - `POST /users` pra “criar administrador” — admin já existe no realm; só assign client roles
 - Atribuir `administrador-master` pela API (`ASSIGNABLE_ROLE_VALUES` exclui)
 - Validar Bearer JWT na request autenticada
@@ -135,7 +137,7 @@ await keycloakAdminApi.post(
 
 Falha de token = `InternalServerErrorException('Unable to authenticate as system administrator')` — **não** `toKeycloakApiError`.
 
-Service account do client precisa roles `realm-management`: `view-users`, `query-users`, `manage-users`, `view-clients`, `manage-clients`. Sem `manage-clients`, assign/remove client roles quebra (403/500).
+Service account do client precisa roles `realm-management`: `view-users`, `query-users`, `manage-users`, `view-clients`, `manage-clients`. Sem `manage-clients`, assign/remove client roles (user ou group) quebra (403/500). Groups CRUD: `manage-users` cobre membership; **create group** pode exigir `manage-realm` — validar no ambiente.
 
 Constantes: `KEYCLOAK_REQUEST_TIMEOUT_MS=30000`, `KEYCLOAK_TOKEN_SAFETY_MARGIN_SECONDS=60`, `KEYCLOAK_DEFAULT_EXPIRES_IN_SECONDS=300`, `KEYCLOAK_TOKEN_REFRESH_BUFFER_MS=30000`.
 
@@ -178,6 +180,28 @@ Sync catálogo: `POST admin/keycloak/roles/sync` (`@Roles(sincronizar-roles)`). 
 
 Role nova: string em `ADMIN_ROLES` (`keycloak-roles.constant.ts`) **e** no frontend `shared/constants/roles`. Depois sync. Master só no console Keycloak.
 
+## Groups (realm admin)
+
+Realm groups = pacote de **client roles** do `KC_ADMIN_CLIENT_ID`. Auth efetiva continua em `resource_access[client].roles` (direto + via membership). Sem DELETE de grupo no produto (só create/list + replace roles + membership).
+
+Métodos em `KeycloakAdminService`: `listRealmGroups`, `createRealmGroup`, `getGroupClientRoles`, `assignClientRolesToGroup`, `removeClientRolesFromGroup`, `replaceClientRolesForGroup`, `listUserGroups`, `addUserToGroup`, `removeUserFromGroup`.
+
+Módulo canônico: `keycloak-groups-admin`. Gate: `@Roles(ADMIN_ROLES.MANAGE_ADMINISTRATORS)`.
+
+Rotas clube:
+
+| HTTP | Path | Efeito |
+|------|------|--------|
+| GET | `admin/keycloak-groups` | lista `{ id, name, path, roles[] }` (só catálogo) |
+| POST | `admin/keycloak-groups` | `{ name, roles[] }` — cria + assign; força `acesso` |
+| PATCH | `admin/keycloak-groups/:groupId/roles` | replace client roles (diff assignable); força `acesso` |
+| GET | `admin/keycloak-groups/users/:keycloakUserId` | grupos do user (+ roles) |
+| PATCH | `admin/keycloak-groups/users/:keycloakUserId` | `{ groupIds[] }` — diff membership |
+
+`replaceClientRolesForGroup`: diff só em `ASSIGNABLE_ROLE_VALUES` / catálogo — não mexe em `administrador-master`.
+
+Espelho passin: prefixo `keycloak/groups`, gate `GENERAL_ADMINISTRATOR`. Se listagem de admins usa path fixo (`KC_GROUP_PATH_TO_SEARCH_ADMINS`), `replace-user-keycloak-groups` **nunca remove** esse grupo de quem já é membro.
+
 ## Partner users (criação real)
 
 `KeycloakPartnerService.registerPartnerUser`:
@@ -210,8 +234,9 @@ FRONT_END_ADMIN_*, FRONT_END_PARTNER_*
 
 - [ ] Realm certo (admin vs partner axios)
 - [ ] M2M token via `getSystemAccessToken`
-- [ ] UUID do client, não `clientId`, em roles/mappings
+- [ ] UUID do client, não `clientId`, em roles/mappings (user **ou** group)
 - [ ] Timeout + headers certos (form vs JSON)
 - [ ] `toKeycloakApiError` nos métodos públicos
 - [ ] Use case + guard + `@Roles` + `docs.ts`
 - [ ] Role nova no catálogo BE **e** FE; master fora de assignable
+- [ ] Groups: força `acesso`; filter response pelo catálogo; membership com safeguard de path admin se o produto listar admins por grupo

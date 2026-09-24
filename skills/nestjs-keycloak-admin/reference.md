@@ -50,8 +50,19 @@ GET    /admin/realms/{realm}/users/{userId}                                brief
 GET    /admin/realms/{realm}/users/{userId}/role-mappings/clients/{clientUuid}
 POST   /admin/realms/{realm}/users/{userId}/role-mappings/clients/{clientUuid}   body [{id,name}]
 DELETE /admin/realms/{realm}/users/{userId}/role-mappings/clients/{clientUuid}   body [{id,name}]
+GET    /admin/realms/{realm}/groups                                              briefRepresentation=true
+POST   /admin/realms/{realm}/groups                                              body { name }
+GET    /admin/realms/{realm}/groups/{groupId}/role-mappings/clients/{clientUuid}
+POST   /admin/realms/{realm}/groups/{groupId}/role-mappings/clients/{clientUuid} body [{id,name}]
+DELETE /admin/realms/{realm}/groups/{groupId}/role-mappings/clients/{clientUuid} body [{id,name}]
+GET    /admin/realms/{realm}/users/{userId}/groups
+PUT    /admin/realms/{realm}/users/{userId}/groups/{groupId}
+DELETE /admin/realms/{realm}/users/{userId}/groups/{groupId}
+GET    /admin/realms/{realm}/group-by-path/{encodedPath}                         # passin: path admin fixo
 GET    /health/ready
 ```
+
+Nest groups (clube): `admin/keycloak-groups` (+ `/users/:keycloakUserId`, `/:groupId/roles`). Passin espelho: `keycloak/groups`.
 
 Search de candidates: fetch all + filtro in-memory (username, first/last, email, id, `attributes.cpf_cnpj`). Paginação Node depois.
 
@@ -90,9 +101,10 @@ No client `KC_ADMIN_CLIENT_ID`: Client authentication + Service accounts roles. 
 
 - `view-users`
 - `query-users`
-- `manage-users`
+- `manage-users` — membership user↔group
 - `view-clients`
-- `manage-clients` — sem isso, POST/PATCH/DELETE administrators quebra
+- `manage-clients` — sem isso, POST/PATCH/DELETE administrators **e** role-mappings de group quebra
+- `manage-realm` — pode ser necessário pra `POST /groups` (create); validar no ambiente
 
 Partner service account: equivalente no client partner (criar user, reset-password, sessions, role-mappings).
 
@@ -102,6 +114,12 @@ Partner service account: equivalente no client partner (criar user, reset-passwo
 interface KeycloakRoleRepresentation {
   id: string;
   name: string;
+}
+
+interface KeycloakGroupRepresentation {
+  id: string;
+  name: string;
+  path?: string;
 }
 
 interface KeycloakUserRepresentation {
@@ -145,13 +163,14 @@ FE admin precisa das **mesmas** strings em `shared/constants/roles`.
 |--------|--------|
 | `keycloak-auth` | OIDC BFF, session, services Admin/Partner, sync roles, partner sync cron |
 | `administrators-admin` | CRUD roles em users do realm admin |
+| `keycloak-groups-admin` | CRUD groups + role-mappings + membership (sem DELETE grupo) |
 | `keycloak-partner-users-admin` | UI admin sobre users do realm partner |
 
-Desvio vs skill Nest: `services/` na raiz de `keycloak-auth`; guards em `models/`; axios em `src/shared/services`. Administrators **sem** entity TypeORM — Keycloak é source of truth. Entity só `KeycloakPartnerSyncRun`.
+Desvio vs skill Nest: `services/` na raiz de `keycloak-auth`; guards em `models/`; axios em `src/shared/services`. Administrators/groups **sem** entity TypeORM — Keycloak é source of truth. Entity só `KeycloakPartnerSyncRun`.
 
 ## O que não existe neste código
 
-- Groups
+- DELETE de realm group no produto (só create/list + roles + membership)
 - Realm roles no permissionamento admin (partner usa 1 realm role default no register)
 - Create/update client
 - userinfo / introspect
